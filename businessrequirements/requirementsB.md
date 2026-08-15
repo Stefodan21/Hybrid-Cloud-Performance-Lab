@@ -1,83 +1,76 @@
-🏢 Business Requirements (Scenario)
-
+🏢 Business Requirements (Azure‑Only Scenario)
 Company: Quant trading firm expanding globally.
 
-Workload: Latency-sensitive trading applications plus analytics dashboards.
+Workload: Latency‑sensitive trading apps + analytics dashboards.
 
-Primary requirements:
+Requirements:
 
-- High Availability (HA) → no single point of failure.
-- Disaster Recovery (DR) → failover to a secondary region within 15 minutes.
-- Observability → metrics, logs, and alerts across infrastructure.
-- Hybrid Cloud → Azure + AWS for resilience.
-- Automation → infrastructure as code, config management, and monitoring agents.
-- ITIL Service Management → ticketing for incidents, changes, and requests.
+High Availability (HA) → Multi‑region VNets, Availability Zones, Load Balancers.
 
----
+Disaster Recovery (DR) → Azure Site Recovery + cross‑region replication.
 
-🧑‍🤝‍🧑 Roles and Ownership
+Observability → Azure Monitor + Log Analytics + Grafana dashboards.
 
-- High Availability (HA) → IT Operations team
-	- Failover configs
-	- Clustering
-- Disaster Recovery (DR) → Infrastructure team
-	- Replication
-	- Cross-region recovery
-	- Site Recovery
-- Observability → SRE / Monitoring team
-	- Metrics
-	- Logs
-	- Alerts
-	- Dashboards
-- Hybrid Cloud → Cloud Admins
-	- Azure / AWS provisioning
-	- RBAC
-	- Governance
-- Automation → Dev / Automation team
-	- Terraform
-	- Ansible
-	- CI/CD pipelines
-- ITIL Service Management → Service Management team
-	- Incident, change, and request workflows in Azure DevOps Boards
+Automation → Terraform + Ansible pipelines for infra + config.
 
-Collaboration & communication: each team has defined responsibilities, escalation paths for incidents, and SLA tracking.
+ITIL Service Management → Azure DevOps Boards for incidents, changes, requests.
 
----
+Collaboration → Clear team ownership via RBAC and tagging (CloudAdmins, ITOps, Dev/Automation, SRE).
 
-🧩 Azure Setup
+🔧 Azure‑Only Architecture Outline
+Networking
 
-Azure AD groups:
+VNets + subnets for trading workloads.
 
-- Dev-Team → Contributor on DevOps project, pipeline permissions
-- IT-Ops → Contributor on VM resource groups, HA/DR configs
-- SRE-Monitoring → Monitoring Contributor role, access to Azure Monitor + Grafana dashboards
-- Infra-Storage → Storage Blob Data Contributor, disk/NAS management
-- Admins → Owner role at subscription level
+NSGs for traffic control.
 
-RBAC assignments:
+Azure Load Balancer / Application Gateway for HA.
 
-- Apply least privilege at the resource-group level.
-- Dev team can deploy infrastructure but cannot modify RBAC.
-- Ops can manage failover but not pipelines.
+Compute
 
-Azure DevOps teams:
+Linux VMs for trading engines.
 
-- Map each AD group into DevOps teams.
-- Boards → ITIL tickets assigned to the right team.
-- Pipelines → restricted to Dev / Automation team.
-- Wiki → DR runbooks owned by Infra team.
+VM Scale Sets for elasticity.
 
----
+Availability Sets/Zones for resilience.
+
+Storage
+
+Managed Disks for VMs.
+
+Blob Storage for Terraform backend + data.
+
+Azure Files for shared storage.
+
+Disaster Recovery
+
+Azure Site Recovery replicating VMs across regions.
+
+Backup Vaults for snapshots.
+
+Monitoring
+
+Azure Monitor + Log Analytics for metrics/logs.
+
+Grafana connected to Azure Monitor for dashboards.
+
+Automation
+
+Terraform for infra provisioning.
+
+Ansible for VM config (kernel/network tuning).
+
+Azure DevOps Pipelines for CI/CD.
 
 📊 Deliverables
+Architecture Diagram: VNets + VMs + Load Balancers + Site Recovery + Monitor + DevOps Boards.
 
-- Architecture diagram: Azure VNets + AWS EC2 + Terraform + Ansible + Kubernetes + Grafana + Azure DevOps Boards, annotated with team ownership.
-- GitHub repo: infrastructure code + playbooks, with a README showing which team owns which configs.
-- Demo script: “Dev team commits Terraform → Pipeline deploys infra → Ops tests failover → SRE monitors → Service Mgmt logs incident.”
-- Business impact statement: achieved HA/DR with <15 min failover, 30% latency reduction, ITIL-aligned incident response, and clear team ownership across Dev, Ops, Infra, and SRE.
+GitHub Repo: Terraform configs, Ansible playbooks, monitoring dashboards.
 
----
+Demo Script: “Terraform deploys infra → Ansible configures VMs → Azure Monitor alert → DevOps ticket created.”
 
-✨ Resume-ready impact line
+Business Impact Statement: Achieved HA/DR across Azure regions, <15 min failover, ITIL‑aligned incident response, fully Azure‑based.
 
-Built a hybrid cloud performance lab using Terraform, Ansible, and Azure Arc to deploy Linux servers across AWS and Azure. Tuned kernel parameters and optimized network throughput, achieving 30% latency reduction for real-time workloads.
+
+
+
