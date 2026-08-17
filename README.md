@@ -83,6 +83,18 @@ This lab is designed to demonstrate how a distributed infrastructure team can:
 ## Repository Contents
 
 - `businessrequirements/requirementsB.md` — consolidated business requirements and ownership model
+- `docs/` — documentation boilerplate for architecture, operations, troubleshooting, and governance
+
+## Documentation
+
+The detailed documentation now lives under `docs/` and is ready for you to fill in step by step:
+
+- `docs/README.md` — documentation index and navigation
+- `docs/Getting-Started-Guide.md` — deployment prerequisites and Terraform workflow
+- `docs/Architecture.md` — lab architecture, diagrams, and component breakdown
+- `docs/Operations.md` — SOPs for deploy, scale, failover, and backup
+- `docs/Troubleshooting.md` — known issues, error codes, and fixes
+- `docs/Governance.md` — tagging, RBAC, ownership, and control standards
 
 ## Notes
 

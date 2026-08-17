@@ -37,14 +37,14 @@ Quant trading firm expanding globally with latency‑sensitive trading applicati
 - Azure Load Balancer / Application Gateway for HA  
 
 ### Compute
-- Linux VMs for trading engines  
+- Linux VMs(Lsv2) for trading engines  
 - VM Scale Sets for elasticity  
 - Availability Sets/Zones for resilience  
 
 ### Storage
-- Managed Disks for VMs  
-- Blob Storage for Terraform backend + data  
-- Azure Files for shared storage  
+- Managed Disks(SSD) for VMs  
+- Blob Storage for Terraform backend + data(RAGZRS FOR HA/DR)  
+- Azure Files for shared storage // Maybe in the future 
 
 ### Disaster Recovery
 - Azure Site Recovery replicating VMs across regions  
