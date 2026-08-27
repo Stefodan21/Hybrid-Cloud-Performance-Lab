@@ -3,6 +3,9 @@
 ## Purpose
 
 TODO: Add the high-level architecture overview for the lab.
+all in one subscription 
+a storage account RA GRS with a container
+a virtual network
 
 ## Diagram
 
