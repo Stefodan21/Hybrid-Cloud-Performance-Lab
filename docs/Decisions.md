@@ -1,4 +1,5 @@
 # Decision Log Entry
+application gateway > web app > employee app > azure load balancer > database
 
 ## Storage Redundancy
 
@@ -31,7 +32,6 @@
 
 **Options Considered:**
 - TODO: Add candidate VM SKUs.
-application gateway > web app > employee app > azure load balancer > database
 
 **Acceptance Criteria:**
 - TODO: Add requirements for performance, cost, and availability.
