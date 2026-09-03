@@ -56,6 +56,18 @@ resource "azurerm_linux_virtual_machine_scale_set" "lvmss" {
     instances = 3
     admin_username = var.admin_username
 
+    # admin_ssh_key {
+    #     username   = "adminuser"
+    #     public_key = local.first_public_key
+    # }
+
+    source_image_reference {
+        publisher = "RedHat"
+        offer = "RHEL"
+        sku = "9-LVM"
+        version = "latest"
+    }
+
     network_interface {
         name = "nicvmsstradingeastus001"
         primary = true
