@@ -2,6 +2,9 @@ variable "region" {
     type = string
     default = "eastus"
 }
+variable "admin_username" {
+    type = string
+}
 
 variable "resource_group_name" {
     type = string

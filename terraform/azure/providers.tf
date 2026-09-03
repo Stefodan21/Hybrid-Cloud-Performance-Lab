@@ -1,4 +1,9 @@
-provider "azurerm"{
-    region = var.region
+provider "azurerm" {
+    features {
+        resource_group {
+            prevent_deletion_if_contains_resources = true
+        }
+    }
+
 }
 

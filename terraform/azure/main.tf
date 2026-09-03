@@ -31,7 +31,7 @@ resource "azurerm_public_ip" "appip" {
 }
 
 
-resource "azurerm_lb" "lb" {
+resource "azurerm_lb" "frontendlb" {
     name = "lbtradingeastus001"
     location = var.region
     resource_group_name = var.resource_group_name
@@ -42,6 +42,34 @@ resource "azurerm_lb" "lb" {
     }
 }
 
+resource "azurerm_lb_backend_address_pool" "appbackendpool" {
+    name = "backendpooltradingeastus001"
+    loadbalancer_id = azurerm_lb.frontendlb.id
+
+}
+
 resource "azurerm_linux_virtual_machine_scale_set" "lvmss" {
     name = "lvmsstradingeastus001"
+    resource_group_name = var.resource_group_name
+    location = var.region
+    sku = "Standard_A2_v2"
+    instances = 3
+    admin_username = var.admin_username
+
+    network_interface {
+        name = "nicvmsstradingeastus001"
+        primary = true
+
+        ip_configuration {
+            name = "ipconfigvmsstradingeastus001"
+            primary = true
+            subnet_id = azure_subnet.app.id
+            load_balancer_backend_address_pool_ids = [azurerm_lb_backend_address_pool.appbackendpool.id]
+        }
+    }
+
+    os_disk {
+        storage_account_type =  "Standard_LRS"
+        caching = "ReadWrite"
+    }
 }
