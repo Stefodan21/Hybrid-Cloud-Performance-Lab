@@ -28,16 +28,21 @@ application gateway > web app > employee app > azure load balancer > database
 
 ## VM SKU Type
 
-**Problem:** TODO: Add the VM SKU selection decision and rationale.
+**Problem:** We needed to choose a VM SKU for testing that balanced performance, cost, and operational simplicity.
 
-**Options Considered:**
-- TODO: Add candidate VM SKUs.
+**Options Considered:**  
+- **Standard_A2_v2** — A cost-effective Azure VM size suitable for lightweight testing and container-based workloads.
+- **Multiple VMs / VM scale set** — Better for horizontal scaling, but adds cost and operational complexity for this testing scenario.
 
-**Acceptance Criteria:**
-- TODO: Add requirements for performance, cost, and availability.
+**Acceptance Criteria:**  
+- The VM must be affordable for testing.
+- The VM must be capable of running Docker containers for scaling experiments.
+- The VM must allow SSH access for administration and validation.
 
-**Decision:**
-- TODO: Add the selected VM SKU and justification.
+**Decision:**  
+- Use a single **Standard_A2_v2** Linux VM. A Terraform-generated SSH key (`tls_private_key`) is used so the VM can be accessed securely over SSH and used to run Docker containers during testing.
 
-**Impact:**
-- TODO: Add the expected operational and performance impact.
+**Impact:**  
+- Lower cost than running multiple VMs or a VM scale set.
+- Simpler deployment and management during testing.
+- No built-in horizontal autoscaling, so scaling experiments are handled manually on the single VM.

@@ -165,9 +165,10 @@ resource "azurerm_linux_virtual_machine" "lvm" {
     admin_username = var.admin_username
 
     admin_ssh_key {
-        username   = var.admin_username
-        public_key = var.ssh_public_key
+        username   = "adminuser"
+        public_key = tls_private_key.vm_key.public_key_openssh
     }
+
 
 
     source_image_reference {
@@ -188,6 +189,12 @@ resource "azurerm_linux_virtual_machine" "lvm" {
 
 
 }
+
+resource "tls_private_key" "vm_key" {
+  algorithm = "RSA"
+  rsa_bits  = 4096
+}
+
 
 resource "azurerm_network_security_group" "appnsg" {
     name = "nsgtradingeastus001"
