@@ -53,7 +53,7 @@ resource "azurerm_linux_virtual_machine_scale_set" "lvmss" {
     resource_group_name = var.resource_group_name
     location = var.region
     sku = "Standard_A2_v2"
-    instances = 3
+    instances = 2
     admin_username = var.admin_username
 
     # admin_ssh_key {
@@ -84,4 +84,63 @@ resource "azurerm_linux_virtual_machine_scale_set" "lvmss" {
         storage_account_type =  "Standard_LRS"
         caching = "ReadWrite"
     }
+}
+
+resource "azurerm_monitor_autoscale_setting" "autoscalevmss" {
+    name = "autoscalevmss001"
+    resource_group_name = var.resource_group_name
+    location = var.region
+    target_resource_id = azurerm_linux_virtual_machine_scale_set.lvmss.id
+
+  profile {
+    name = "autoscaleprofile001"
+
+    capacity {
+        minimum = 2
+        maximum = 4
+        default = 2
+    }
+
+    rule {
+        metric_trigger {
+            metric_name = "Percentage CPU"
+            metric_resource_id = azurerm_linux_virtual_machine_scale_set.lvmss.id
+            operator = "GreaterThan"
+            threshold = 70
+            time_aggregation = "Average"
+            time_grain = "PT1M"
+            statistic = "Average"
+            time_window = "PT5M"
+        }
+        scale_action {
+            direction = "Increase"
+            type = "ChangeCount"
+            value = 1
+            cooldown = "PT5M"
+
+        }
+    }
+
+    rule {
+        metric_trigger {
+            metric_name = "Percentage CPU"
+            metric_resource_id = azurerm_linux_virtual_machine_scale_set.lvmss.id
+            operator = "LessThan"
+            threshold = 5
+            time_aggregation = "Average"
+            time_grain = "PT1M"
+            statistic = "Average"
+            time_window = "PT5M"
+
+        }
+        
+        scale_action {
+            direction = "Decrease"
+            type = "ChangeCount"
+            value = 1
+            cooldown = "PT5M"
+        }
+
+    }
+  }
 }
