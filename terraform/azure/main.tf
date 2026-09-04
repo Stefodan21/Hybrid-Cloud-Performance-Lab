@@ -48,99 +48,161 @@ resource "azurerm_lb_backend_address_pool" "appbackendpool" {
 
 }
 
-resource "azurerm_linux_virtual_machine_scale_set" "lvmss" {
-    name = "lvmsstradingeastus001"
+# resource "azurerm_linux_virtual_machine_scale_set" "lvmss" {
+#     name = "lvmsstradingeastus001"
+#     resource_group_name = var.resource_group_name
+#     location = var.region
+#     sku = "Standard_A2_v2"
+#     instances = 2
+#     admin_username = var.admin_username
+
+#     # admin_ssh_key {
+#     #     username   = "adminuser"
+#     #     public_key = local.first_public_key
+#     # }
+
+#     source_image_reference {
+#         publisher = "RedHat"
+#         offer = "RHEL"
+#         sku = "9-LVM"
+#         version = "latest"
+#     }
+
+#     network_interface {
+#         name = "nicvmsstradingeastus001"
+#         primary = true
+
+#         ip_configuration {
+#             name = "ipconfigvmsstradingeastus001"
+#             primary = true
+#             subnet_id = azure_subnet.app.id
+#             load_balancer_backend_address_pool_ids = [azurerm_lb_backend_address_pool.appbackendpool.id]
+#         }
+#     }
+
+#     os_disk {
+#         storage_account_type =  "Standard_LRS"
+#         caching = "ReadWrite"
+#     }
+# }
+
+# resource "azurerm_monitor_autoscale_setting" "autoscalevmss" {
+#     name = "autoscalevmss001"
+#     resource_group_name = var.resource_group_name
+#     location = var.region
+#     target_resource_id = azurerm_linux_virtual_machine_scale_set.lvmss.id
+
+#   profile {
+#     name = "autoscaleprofile001"
+
+#     capacity {
+#         minimum = 2
+#         maximum = 4
+#         default = 2
+#     }
+
+#     rule {
+#         metric_trigger {
+#             metric_name = "Percentage CPU"
+#             metric_resource_id = azurerm_linux_virtual_machine_scale_set.lvmss.id
+#             operator = "GreaterThan"
+#             threshold = 70
+#             time_aggregation = "Average"
+#             time_grain = "PT1M"
+#             statistic = "Average"
+#             time_window = "PT5M"
+#         }
+#         scale_action {
+#             direction = "Increase"
+#             type = "ChangeCount"
+#             value = 1
+#             cooldown = "PT5M"
+
+#         }
+#     }
+
+#     rule {
+#         metric_trigger {
+#             metric_name = "Percentage CPU"
+#             metric_resource_id = azurerm_linux_virtual_machine_scale_set.lvmss.id
+#             operator = "LessThan"
+#             threshold = 5
+#             time_aggregation = "Average"
+#             time_grain = "PT1M"
+#             statistic = "Average"
+#             time_window = "PT5M"
+
+#         }
+        
+#         scale_action {
+#             direction = "Decrease"
+#             type = "ChangeCount"
+#             value = 1
+#             cooldown = "PT5M"
+#         }
+
+#     }
+#   }
+# }
+resource "azurerm_network_interface" "appnic" {
+    name = "nicvmtradingeastus001"
+    location = var.region
+    resource_group_name = var.resource_group_name
+
+    ip_configuration {
+        name = "ipconfigvmtradingeastus001"
+        subnet_id = azure_subnet.app.id
+        private_ip_address_allocation = "Static"
+        private_ip_address = "10.0.0.4"
+
+    }
+}
+resource "azurerm_linux_virtual_machine" "lvm" {
+    name = "vmtradingeastus001"
     resource_group_name = var.resource_group_name
     location = var.region
-    sku = "Standard_A2_v2"
-    instances = 2
+    size = "Standard_A2_v2"
     admin_username = var.admin_username
 
-    # admin_ssh_key {
-    #     username   = "adminuser"
-    #     public_key = local.first_public_key
-    # }
+    admin_ssh_key {
+        username   = var.admin_username
+        public_key = var.ssh_public_key
+    }
+
 
     source_image_reference {
         publisher = "RedHat"
         offer = "RHEL"
-        sku = "9-LVM"
+        sku = "9-lvm"
         version = "latest"
-    }
 
-    network_interface {
-        name = "nicvmsstradingeastus001"
-        primary = true
-
-        ip_configuration {
-            name = "ipconfigvmsstradingeastus001"
-            primary = true
-            subnet_id = azure_subnet.app.id
-            load_balancer_backend_address_pool_ids = [azurerm_lb_backend_address_pool.appbackendpool.id]
-        }
     }
 
     os_disk {
-        storage_account_type =  "Standard_LRS"
+        name = "osdiskvmtradingeastus001"
+        storage_account_type = "Standard_LRS"
         caching = "ReadWrite"
     }
+
+    network_interface_ids = [azurerm_network_interface.appnic.id]
+
+
 }
 
-resource "azurerm_monitor_autoscale_setting" "autoscalevmss" {
-    name = "autoscalevmss001"
-    resource_group_name = var.resource_group_name
+resource "azurerm_network_security_group" "appnsg" {
+    name = "nsgtradingeastus001"
     location = var.region
-    target_resource_id = azurerm_linux_virtual_machine_scale_set.lvmss.id
+    resource_group_name = var.resource_group_name
 
-  profile {
-    name = "autoscaleprofile001"
-
-    capacity {
-        minimum = 2
-        maximum = 4
-        default = 2
+    security_rule {
+        name = "AllowSSH"
+        priority = 1001
+        direction = "Inbound"
+        access = "Allow"
+        protocol = "Tcp"
+        source_port_range = "*"
+        destination_port_range = "22"
+        source_address_prefix = "*"
+        destination_address_prefix = "10.0.0.4"
     }
-
-    rule {
-        metric_trigger {
-            metric_name = "Percentage CPU"
-            metric_resource_id = azurerm_linux_virtual_machine_scale_set.lvmss.id
-            operator = "GreaterThan"
-            threshold = 70
-            time_aggregation = "Average"
-            time_grain = "PT1M"
-            statistic = "Average"
-            time_window = "PT5M"
-        }
-        scale_action {
-            direction = "Increase"
-            type = "ChangeCount"
-            value = 1
-            cooldown = "PT5M"
-
-        }
-    }
-
-    rule {
-        metric_trigger {
-            metric_name = "Percentage CPU"
-            metric_resource_id = azurerm_linux_virtual_machine_scale_set.lvmss.id
-            operator = "LessThan"
-            threshold = 5
-            time_aggregation = "Average"
-            time_grain = "PT1M"
-            statistic = "Average"
-            time_window = "PT5M"
-
-        }
-        
-        scale_action {
-            direction = "Decrease"
-            type = "ChangeCount"
-            value = 1
-            cooldown = "PT5M"
-        }
-
-    }
-  }
 }
