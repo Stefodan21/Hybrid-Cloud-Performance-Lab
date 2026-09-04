@@ -1,5 +1,6 @@
 data "azurerm_resource_group" "rg" {
     name = var.resource_group_name
+    
 }
 
 
@@ -7,18 +8,21 @@ resource "azure_virtual_network" "vnet" {
     name = "vnettradingeastus001"
     region = var.region
     address_space = ["10.0.0.0/16"]
+    tags = var.tags
 }
 
 resource "azure_subnet" "app" {
     name = "snatradingeastus001"
     region = var.region
     address_space = ["10.0.0.0/24"]
+    tags = var.tags
 }
 
 resource "azure_subnet" "db" {
     name = "sndtradingeastus001"
     region = var.region
     address_space = ["10.0.1.0/24"]
+    tags = var.tags
 }
 
 
@@ -28,6 +32,7 @@ resource "azurerm_public_ip" "appip" {
     resource_group_name = var.resource_group_name
     allocation_method = "Dynamic"
     sku = "Standard"
+    tags = var.tags
 }
 
 
@@ -35,6 +40,7 @@ resource "azurerm_lb" "frontendlb" {
     name = "lbtradingeastus001"
     location = var.region
     resource_group_name = var.resource_group_name
+    tags = var.tags
 
     frontend_ip_configuration {
         name = "feiptradingeastus001"
@@ -148,6 +154,7 @@ resource "azurerm_network_interface" "appnic" {
     name = "nicvmtradingeastus001"
     location = var.region
     resource_group_name = var.resource_group_name
+    tags = var.tags
 
     ip_configuration {
         name = "ipconfigvmtradingeastus001"
@@ -168,6 +175,7 @@ resource "azurerm_linux_virtual_machine" "lvm" {
         username   = "adminuser"
         public_key = tls_private_key.vm_key.public_key_openssh
     }
+    tags = var.tags
 
 
 
@@ -200,7 +208,7 @@ resource "azurerm_network_security_group" "appnsg" {
     name = "nsgtradingeastus001"
     location = var.region
     resource_group_name = var.resource_group_name
-
+    tags = var.tags
     security_rule {
         name = "AllowSSH"
         priority = 1001

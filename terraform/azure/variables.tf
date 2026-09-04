@@ -25,3 +25,8 @@ variable "container_name" {
 variable "ssh_public_key" {
   type = string
 }
+
+
+variable "tags" {
+    type = map(string)
+}
