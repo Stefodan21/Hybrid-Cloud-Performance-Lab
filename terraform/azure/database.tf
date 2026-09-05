@@ -3,6 +3,13 @@ resource "azurerm_cosmosdb_account" "cdbaccount" {
     location = var.region
     resource_group_name = var.resource_group_name
     offer_type = "standard"
+
+    public_network_access_enabled = false
+
+    virtual_network_rule {
+        id = azurerm_subnet.app.id
+    }
+
     geo_location {
         location          = "eastus"
         failover_priority = 0
