@@ -2,10 +2,9 @@
 
 ## Purpose
 
-TODO: Add the high-level architecture overview for the lab.
-all in one subscription 
-a storage account RA GRS with a container
-a virtual network
+This page describes the high-level Azure architecture for the platform.
+
+The design uses a single subscription, a dedicated resource group, Azure Blob Storage for Terraform state, and a virtual network that hosts the application subnet and compute layer.
 
 ## Diagram
 
@@ -13,12 +12,14 @@ TODO: Insert the architecture diagram here.
 
 ## Components
 
-- TODO: VNets and subnets
-- TODO: Virtual machines and scale sets
-- TODO: Storage and backup services
-- TODO: Monitoring and alerting stack
+- Virtual network and application subnet
+- Linux VM Scale Set behind a public load balancer
+- Azure Blob Storage for Terraform state
+- Cosmos DB with service endpoint access from the application subnet
+- Monitoring and alerting via Azure-native services
 
 ## Design notes
 
-- TODO: Add resiliency and failover assumptions
-- TODO: Add latency and observability considerations
+- Resiliency is built around managed Azure services and repeatable infrastructure provisioning.
+- Latency-sensitive traffic is constrained to the application subnet and approved service paths.
+- Observability should cover infrastructure, connectivity, and application health.

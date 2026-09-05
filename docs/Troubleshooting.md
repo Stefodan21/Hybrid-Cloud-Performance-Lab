@@ -2,7 +2,7 @@
 
 ## Purpose
 
-TODO: Add the known issues and fixes for the lab.
+This page captures known issues and fixes for the platform.
 
 ## Known Issues
 
@@ -53,7 +53,7 @@ The error message is misleading. The subscription was valid and reachable the wh
 Register the common providers up front before deploying, so you don't hit the same misleading error mid-deploy:
 
 ```bash
-# Register the most common resource providers used by this lab.
+# Register the most common resource providers used by this platform.
 az provider register --namespace Microsoft.Storage --wait
 # Needed for networking resources such as VNets, NSGs, and load balancers.
 az provider register --namespace Microsoft.Network --wait

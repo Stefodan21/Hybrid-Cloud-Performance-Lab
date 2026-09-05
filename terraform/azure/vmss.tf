@@ -5,6 +5,7 @@ resource "azurerm_linux_virtual_machine_scale_set" "lvmss" {
     sku = "Standard_A2_v2"
     instances = 2
     admin_username = var.admin_username
+    tags = var.tags
 
     admin_ssh_key {
         username   = var.admin_username
@@ -41,6 +42,7 @@ resource "azurerm_monitor_autoscale_setting" "autoscalevmss" {
     resource_group_name = var.resource_group_name
     location = var.region
     target_resource_id = azurerm_linux_virtual_machine_scale_set.lvmss.id
+    tags = var.tags
 
   profile {
     name = "autoscaleprofile001"

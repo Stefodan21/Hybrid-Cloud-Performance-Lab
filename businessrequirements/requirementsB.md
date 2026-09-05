@@ -1,4 +1,4 @@
-# Business Requirements – Azure‑Only Hybrid Cloud Lab
+# Business Requirements – Azure‑Only Hybrid Cloud Platform
 
 ## Company Context
 Quant trading firm expanding globally with latency‑sensitive trading applications and analytics dashboards.

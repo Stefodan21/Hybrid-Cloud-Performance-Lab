@@ -83,7 +83,7 @@ application gateway > web app > employee app > azure load balancer > database
 **Acceptance Criteria:**  
 - The database connection must remain private from the application subnet.
 - The solution must avoid unnecessary public internet exposure.
-- The configuration must stay simple enough for the lab environment.
+- The configuration must stay simple enough for the platform environment.
 
 **Decision:**  
 - Use a **service endpoint** on the application subnet for Cosmos DB access so the trading application can connect privately over Azure infrastructure.
@@ -99,7 +99,7 @@ application gateway > web app > employee app > azure load balancer > database
 **Problem:** We needed subnet-level security rules that allow only the required traffic for administration, application access, and Cosmos DB connectivity while blocking everything else by default.
 
 **Options Considered:**  
-- **Open subnet with minimal filtering** — Simple, but too permissive for the lab.
+- **Open subnet with minimal filtering** — Simple, but too permissive for the platform.
 - **Custom allow rules plus explicit deny-all rule** — Clear and secure, but the deny-all behavior is already provided by the NSG defaults.
 - **Allow required traffic and rely on default deny rules** — Cleanest approach for this setup.
 

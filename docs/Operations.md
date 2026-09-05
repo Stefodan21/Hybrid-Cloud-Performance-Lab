@@ -2,17 +2,17 @@
 
 ## Purpose
 
-TODO: Add the operational runbooks and SOPs for the lab.
+This page captures the operational runbooks and standard procedures for the platform.
 
 ## Standard procedures
 
-- TODO: Deploy
-- TODO: Scale
-- TODO: Failover
-- TODO: Backup and restore
+- Deploy infrastructure with Terraform
+- Scale the VMSS as required
+- Validate failover and recovery assumptions
+- Confirm backup and restore readiness
 
 ## Operational notes
 
-- TODO: Add approval steps
-- TODO: Add maintenance windows
-- TODO: Add escalation paths
+- Document approval steps for infrastructure changes
+- Define maintenance windows for disruptive updates
+- Record escalation paths for access, network, and recovery issues

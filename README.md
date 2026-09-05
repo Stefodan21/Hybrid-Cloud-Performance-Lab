@@ -1,101 +1,87 @@
-# Hybrid Cloud Performance Lab
+# Hybrid Cloud Performance Platform
 
-A hybrid cloud performance lab for a quant trading firm expanding globally. The project combines **Azure**, **AWS**, **Terraform**, **Ansible**, **Azure Arc**, and observability tooling to support latency-sensitive trading applications and analytics dashboards with high availability and disaster recovery in mind.
+A reference implementation for a latency-sensitive trading workload. The repository focuses on **Terraform-driven Azure infrastructure**, with supporting documentation for architecture, governance, operations, and troubleshooting.
 
-## Overview
+## What’s in this repo
 
-This lab is designed to demonstrate how a distributed infrastructure team can:
+- `terraform/azure/` — Azure infrastructure code for networking, VM scale sets, load balancing, storage, and Cosmos DB
+- `docs/` — handoff-ready documentation for getting started, architecture, operations, governance, and troubleshooting
+- `businessrequirements/` — business and platform requirements that shape the overall design
 
-- Deploy Linux servers across **Azure** and **AWS**
-- Automate provisioning with **Terraform**
-- Configure systems with **Ansible**
-- Onboard AWS instances into **Azure Arc**
-- Monitor performance with **Azure Monitor**, **Log Analytics**, **Prometheus**, and **Grafana**
-- Tune kernel and networking settings for lower latency and higher throughput
-- Support HA/DR, observability, and ITIL-aligned operations
+## Current Azure design
 
-## Business Scenario
+- Virtual network and application subnet
+- Linux VM Scale Set behind a public load balancer
+- Network security group applied at the subnet level
+- Cosmos DB with private access via service endpoint
+- Remote Terraform state stored in Azure Blob Storage
 
-**Company:** Quant trading firm expanding globally  
-**Workload:** Latency-sensitive trading applications plus analytics dashboards
+## How to run it
 
-### Core requirements
+### Prerequisites
 
-- **High Availability (HA):** no single point of failure
-- **Disaster Recovery (DR):** failover to a secondary region within 15 minutes
-- **Observability:** metrics, logs, and alerts across infrastructure
-- **Hybrid Cloud:** Azure + AWS for resilience
-- **Automation:** infrastructure as code, config management, and monitoring agents
-- **ITIL Service Management:** incident, change, and request workflows
+- Azure CLI installed and authenticated
+- Terraform installed
+- Access to the target subscription and backend storage account
+- Azure RBAC permission to read and write the Terraform state container
 
-## Roles and Ownership
+### Deploy Azure infrastructure
 
-- **IT Operations:** HA configurations, clustering, failover readiness
-- **Infrastructure:** replication, cross-region recovery, Site Recovery
-- **SRE / Monitoring:** metrics, logs, alerts, dashboards
-- **Cloud Admins:** Azure/AWS provisioning, RBAC, governance
-- **Dev / Automation:** Terraform, Ansible, CI/CD pipelines
-- **Service Management:** Azure DevOps Boards workflows and incident handling
+1. Sign in to Azure:
 
-## Azure Setup
+	```bash
+	az login
+	```
 
-### Azure AD groups
+2. Select the correct subscription:
 
-- `Dev-Team` → Contributor on DevOps project, pipeline permissions
-- `IT-Ops` → Contributor on VM resource groups, HA/DR configs
-- `SRE-Monitoring` → Monitoring Contributor, access to Azure Monitor + Grafana
-- `Infra-Storage` → Storage Blob Data Contributor, disk/NAS management
-- `Admins` → Owner at subscription level
+	```bash
+	az account set --subscription "<subscription-id-or-name>"
+	```
 
-### RBAC principles
+3. Move into the Azure Terraform folder:
 
-- Use least privilege at the resource-group level
-- Dev can deploy infrastructure but cannot modify RBAC
-- Ops can manage failover but not pipelines
+	```bash
+	cd terraform/azure
+	```
 
-### Azure DevOps mapping
+4. Initialize Terraform with the backend config file:
 
-- Map each AD group into DevOps teams
-- Boards for ITIL tickets and tracking
-- Pipelines restricted to Dev / Automation
-- Wiki for DR runbooks owned by Infrastructure
+	```bash
+	terraform init -backend-config=backend.hcl
+	```
 
-## Deliverables
+5. Review the plan:
 
-- **Architecture diagram** showing Azure VNets + AWS EC2 + Terraform + Ansible + Kubernetes + Grafana + Azure DevOps Boards
-- **GitHub repo** containing infrastructure code, playbooks, and monitoring configuration
-- **Demo script** showing provisioning, config application, failover, and Grafana metrics
-- **Business impact statement** describing HA/DR, latency reduction, observability, and team ownership
+	```bash
+	terraform plan -var-file=terraform.tfvars
+	```
 
-## Demo Flow
+6. Apply the configuration:
 
-1. Provision infrastructure with Terraform
-2. Apply configurations with Ansible
-3. Onboard and monitor hybrid resources with Azure Arc
-4. Trigger a failover scenario
-5. Show Grafana / Azure Monitor metrics
-6. Capture incident tracking in Azure DevOps Boards
+	```bash
+	terraform apply -var-file=terraform.tfvars
+	```
 
-## Resume-ready impact line
+## Tagging
 
-> Built a hybrid cloud performance lab using Terraform, Ansible, and Azure Arc to deploy Linux servers across AWS and Azure. Tuned kernel parameters and optimized network throughput, achieving 30% latency reduction for real-time workloads.
+All Azure resources use a shared Terraform tag map. The current standard includes:
 
-## Repository Contents
+- `environment`
+- `project`
+- `owner`
 
-- `businessrequirements/requirementsB.md` — consolidated business requirements and ownership model
-- `docs/` — documentation boilerplate for architecture, operations, troubleshooting, and governance
+See `docs/Governance.md` for the tagging standard and ownership rules.
 
 ## Documentation
 
-The detailed documentation now lives under `docs/` and is ready for you to fill in step by step:
-
-- `docs/README.md` — documentation index and navigation
+- `docs/README.md` — documentation index
 - `docs/Getting-Started-Guide.md` — deployment prerequisites and Terraform workflow
-- `docs/Architecture.md` — lab architecture, diagrams, and component breakdown
-- `docs/Operations.md` — SOPs for deploy, scale, failover, and backup
-- `docs/Troubleshooting.md` — known issues, error codes, and fixes
-- `docs/Governance.md` — tagging, RBAC, ownership, and control standards
+- `docs/Architecture.md` — architecture overview and component breakdown
+- `docs/Operations.md` — repeatable operational steps
+- `docs/Troubleshooting.md` — common issues and fixes
+- `docs/Governance.md` — tagging, RBAC, and ownership standards
 
 ## Notes
 
-This repository is intended as a portfolio-style architecture and implementation brief. It focuses on the design, automation, monitoring, and operational story behind the lab.
+This repository is intentionally small and focused. The goal is to show a clean, realistic Azure implementation that is easy to understand, easy to run, and easy to extend.

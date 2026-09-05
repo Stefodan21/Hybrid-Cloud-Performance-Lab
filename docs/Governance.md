@@ -2,20 +2,29 @@
 
 ## Purpose
 
-TODO: Add governance, ownership, and control standards for the lab.
+This page defines the governance, ownership, and control standards for the platform.
 
 ## Tagging standards
 
-- TODO: Add required tags
-- TODO: Add naming conventions
-- TODO: Add resource classification rules
+- Every Azure resource should use the shared Terraform `tags` map.
+- Required tags:
+	- `environment`
+	- `project`
+	- `owner`
+	- `managed_by`
+	- `purpose`
+- Tag values should stay short, consistent, and lowercase where practical.
+- Use tags to separate development, test, and production-style examples clearly.
 
 ## RBAC and ownership
 
-- TODO: Add roles and responsibilities
-- TODO: Add access boundaries
-- TODO: Add approval or review process
+- Subscription Owner: platform administration and IAM oversight
+- Contributor: deployment and day-to-day platform management
+- Storage Blob Data Contributor: access to Terraform backend state
+- Keep RBAC scoped to the narrowest resource group or storage account possible.
 
 ## Compliance notes
 
-- TODO: Add audit and change-management expectations
+- Changes should be made through Terraform instead of ad hoc portal edits.
+- Update documentation whenever infrastructure or tag standards change.
+- Keep a simple audit trail by using clear commit messages and small, reviewable changes.
