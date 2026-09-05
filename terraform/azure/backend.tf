@@ -1,5 +1,5 @@
 terraform {
-  required_version = ">= 0.12"
+  required_version = ">= 1.3.0"
   
   backend "azurerm" {
     use_azuread_auth = true
@@ -10,7 +10,11 @@ terraform {
   }
 
   required_providers {
-    azurerm = "5.0.1"
+
+    azurerm = {
+      source = "hashicorp/azurerm"
+      version = "5.0.1"
+    }
   }
     
     

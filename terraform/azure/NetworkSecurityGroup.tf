@@ -39,6 +39,6 @@ resource "azurerm_network_security_group" "appnsg" {
 }
 
 resource "azurerm_subnet_network_security_group_association" "app" {
-  subnet_id                 = azure_subnet.app.id
+  subnet_id                 = azurerm_subnet.app.id
   network_security_group_id = azurerm_network_security_group.appnsg.id
 }

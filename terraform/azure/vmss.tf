@@ -7,7 +7,7 @@ resource "azurerm_linux_virtual_machine_scale_set" "lvmss" {
     admin_username = var.admin_username
 
     admin_ssh_key {
-        username   = "adminuser"
+        username   = var.admin_username
         public_key = tls_private_key.vm_key.public_key_openssh
     }
 
@@ -25,7 +25,7 @@ resource "azurerm_linux_virtual_machine_scale_set" "lvmss" {
         ip_configuration {
             name = "ipconfigvmsstradingeastus001"
             primary = true
-            subnet_id = azure_subnet.app.id
+            subnet_id = azurerm_subnet.app.id
             load_balancer_backend_address_pool_ids = [azurerm_lb_backend_address_pool.appbackendpool.id]
         }
     }
