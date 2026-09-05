@@ -1,25 +1,25 @@
 variable "region" {
-    type = string
-    default = "eastus"
+  type    = string
+  default = "eastus"
 }
 variable "admin_username" {
-    type = string
+  type = string
 }
 
 variable "resource_group_name" {
-    type = string
+  type = string
 }
 
 variable "tenant_id" {
-    type = string
+  type = string
 }
 
 variable "storage_account_name" {
-    type = string
+  type = string
 }
 
 variable "container_name" {
-    type = string
+  type = string
 }
 
 variable "ssh_public_key" {
@@ -28,9 +28,9 @@ variable "ssh_public_key" {
 
 
 variable "tags" {
-    type = map(string)
+  type = map(string)
 }
 
 variable "throughput" {
-    type = number
+  type = number
 }
