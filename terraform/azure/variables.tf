@@ -30,3 +30,7 @@ variable "ssh_public_key" {
 variable "tags" {
     type = map(string)
 }
+
+variable "throughput" {
+    type = number
+}

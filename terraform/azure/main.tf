@@ -16,15 +16,10 @@ resource "azure_subnet" "app" {
     region = var.region
     address_space = ["10.0.0.0/24"]
     tags = var.tags
+    service_endpoints = [
+        "Microsoft.AzureCosmosDB"
+    ]
 }
-
-resource "azure_subnet" "db" {
-    name = "sndtradingeastus001"
-    region = var.region
-    address_space = ["10.0.1.0/24"]
-    tags = var.tags
-}
-
 
 resource "azurerm_public_ip" "appip" {
     name = "publiciptradeeastus001"
@@ -150,20 +145,6 @@ resource "azurerm_monitor_autoscale_setting" "autoscalevmss" {
     }
   }
 }
-# resource "azurerm_network_interface" "appnic" {
-#     name = "nicvmtradingeastus001"
-#     location = var.region
-#     resource_group_name = var.resource_group_name
-#     tags = var.tags
-
-#     ip_configuration {
-#         name = "ipconfigvmtradingeastus001"
-#         subnet_id = azure_subnet.app.id
-#         private_ip_address_allocation = "Static"
-#         private_ip_address = "10.0.0.4"
-
-#     }
-# }
 # resource "azurerm_linux_virtual_machine" "lvm" {
 #     name = "vmtradingeastus001"
 #     resource_group_name = var.resource_group_name
@@ -211,18 +192,70 @@ resource "azurerm_network_security_group" "appnsg" {
     tags = var.tags
     security_rule {
         name = "AllowSSH"
-        priority = 1001
+        priority = 300
         direction = "Inbound"
         access = "Allow"
         protocol = "Tcp"
         source_port_range = "*"
         destination_port_range = "22"
         source_address_prefix = "*"
-        destination_address_prefix = "10.0.0.4"
+        destination_address_prefix = "10.0.0.0/24"
+    }
+    security_rule {
+        name = "AllowHTTPS"
+        priority = 400
+        direction = "Inbound"
+        access = "Allow"
+        protocol = "Tcp"
+        source_port_range = "*"
+        destination_port_range = "443"
+        source_address_prefix = "*"
+        destination_address_prefix = "10.0.0.0/24"
+    }
+    security_rule {
+        name = "AllowCosmosDB"
+        priority = 500
+        direction = "Outbound"
+        access = "Allow"
+        protocol = "Tcp"
+        source_port_range = "443"
+        destination_port_range = "443"
+        source_address_prefix = "10.0.0.0/24"
+        destination_address_prefix = "AzureCosmosDB"
     }
 }
 
 resource "azurerm_subnet_network_security_group_association" "app" {
   subnet_id                 = azure_subnet.app.id
   network_security_group_id = azurerm_network_security_group.appnsg.id
+}
+
+resource "azurerm_cosmosdb_account" "cdbaccount" {
+    name = "cosmosdbtradingeastus001"
+    location = var.region
+    resource_group_name = var.resource_group_name
+    offer_type = "standard"
+    geo_location {
+        location          = "eastus"
+        failover_priority = 0
+    }
+
+    geo_location {
+        location          = "westus"
+        failover_priority = 1
+    }
+
+    consistency_policy {
+        consistency_level = "Session"
+    }
+
+    tags = var.tags
+
+}
+
+resource "azurerm_cosmosdb_table" "cdtable" {
+    name = "cdtabletradingeastus001"
+    resource_group_name = var.resource_group_name
+    account_name = azurerm_cosmosdb_account.cdbaccount.name
+    throughput = var.throughput
 }
