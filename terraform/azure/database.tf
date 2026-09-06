@@ -1,36 +1,19 @@
-resource "azurerm_cosmosdb_account" "cdbaccount" {
-  name                = "cosmosdbtradingeastus001"
-  location            = var.region
-  resource_group_name = var.resource_group_name
-  offer_type          = "standard"
+resource "azurerm_storage_account" "tableacct" {
+  name                     = "sttabletrading001"
+  resource_group_name      = coalesce(data.azurerm_resource_group.rg.name, var.resource_group_name)
+  location                 = var.region
+  account_tier             = "Standard"
+  account_replication_type = "LRS"
+  account_kind             = "StorageV2"
 
-  public_network_access_enabled = false
-
-  virtual_network_rule {
-    id = azurerm_subnet.app.id
-  }
-
-  geo_location {
-    location          = "eastus"
-    failover_priority = 0
-  }
-
-  geo_location {
-    location          = "westus"
-    failover_priority = 1
-  }
-
-  consistency_policy {
-    consistency_level = "Session"
-  }
+  allow_nested_items_to_be_public = false
+  https_traffic_only_enabled      = true
+  min_tls_version                 = "TLS1_2"
 
   tags = var.tags
-
 }
 
-resource "azurerm_cosmosdb_table" "cdtable" {
-  name                = "cdtabletradingeastus001"
-  resource_group_name = var.resource_group_name
-  account_name        = azurerm_cosmosdb_account.cdbaccount.name
-  throughput          = var.throughput
+resource "azurerm_storage_table" "table" {
+  name               = "tradingmetadata"
+  storage_account_id = azurerm_storage_account.tableacct.id
 }

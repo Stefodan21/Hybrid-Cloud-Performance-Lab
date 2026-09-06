@@ -4,31 +4,31 @@ variable "region" {
 }
 variable "admin_username" {
   type = string
+  default = "adminuser"
 }
 
 variable "resource_group_name" {
   type = string
+  default = "rgtradingeastus001"
 }
 
 variable "tenant_id" {
   type = string
 }
 
-variable "storage_account_name" {
-  type = string
-}
 
 variable "container_name" {
   type = string
+  default = "terraform"
 }
 
-variable "ssh_public_key" {
-  type = string
-}
 
 
 variable "tags" {
   type = map(string)
+  default = {
+    environment = "dev"
+  }
 }
 
 variable "throughput" {
