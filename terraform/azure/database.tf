@@ -1,6 +1,6 @@
 resource "azurerm_storage_account" "tableacct" {
   name                     = "sttabletrading001"
-  resource_group_name      = coalesce(data.azurerm_resource_group.rg.name, var.resource_group_name)
+  resource_group_name      = var.resource_group_name
   location                 = var.region
   account_tier             = "Standard"
   account_replication_type = "LRS"

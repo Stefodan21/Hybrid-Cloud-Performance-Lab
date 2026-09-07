@@ -1,7 +1,7 @@
 resource "azurerm_network_security_group" "appnsg" {
   name                = "nsgtradingeastus001"
   location            = var.region
-  resource_group_name = coalesce(data.azurerm_resource_group.rg.name, var.resource_group_name)
+  resource_group_name = var.resource_group_name
   tags                = var.tags
   security_rule {
     name                       = "AllowSSH"

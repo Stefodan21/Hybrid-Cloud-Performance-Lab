@@ -1,6 +1,6 @@
 resource "azurerm_linux_virtual_machine_scale_set" "lvmss" {
   name                = "lvmsstradingeastus001"
-  resource_group_name = coalesce(data.azurerm_resource_group.rg.name, var.resource_group_name)
+  resource_group_name = var.resource_group_name
   location            = var.region
   sku                 = "Standard_A2_v2"
   instances           = 2
@@ -39,7 +39,7 @@ resource "azurerm_linux_virtual_machine_scale_set" "lvmss" {
 
 resource "azurerm_monitor_autoscale_setting" "autoscalevmss" {
   name                = "autoscalevmss001"
-  resource_group_name = coalesce(data.azurerm_resource_group.rg.name, var.resource_group_name)
+  resource_group_name = var.resource_group_name
   location            = var.region
   target_resource_id  = azurerm_linux_virtual_machine_scale_set.lvmss.id
   tags                = var.tags
