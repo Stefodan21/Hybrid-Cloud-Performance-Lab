@@ -35,6 +35,29 @@ resource "azurerm_linux_virtual_machine_scale_set" "lvmss" {
     storage_account_type = "Standard_LRS"
     caching              = "ReadWrite"
   }
+
+  upgrade_mode = "Manual"
+}
+
+resource "azurerm_virtual_machine_scale_set_extension" "vmssextension" {
+  name                 = "vmssextension001"
+  virtual_machine_scale_set_id = azurerm_linux_virtual_machine_scale_set.lvmss.id
+  publisher            = "Microsoft.Azure.Extensions"
+  type                 = "CustomScript"
+  type_handler_version = "2.1"
+
+  settings = <<SETTINGS
+    {
+      "fileUris": [
+        "https://raw.githubusercontent.com/Stefodan21/fedora-bootstrap-suite/main/bootstrap.sh",
+        "https://raw.githubusercontent.com/Stefodan21/fedora-bootstrap-suite/main/packagebootstrap.sh",
+        "https://raw.githubusercontent.com/Stefodan21/fedora-bootstrap-suite/main/networkbootstrap.sh",
+        "https://raw.githubusercontent.com/Stefodan21/fedora-bootstrap-suite/main/databasebootstrap.sh",
+        "https://raw.githubusercontent.com/Stefodan21/fedora-bootstrap-suite/main/securitybootstrap.sh"
+      ],
+      "commandToExecute": "bash bootstrap.sh"
+    }
+  SETTINGS
 }
 
 resource "azurerm_monitor_autoscale_setting" "autoscalevmss" {
