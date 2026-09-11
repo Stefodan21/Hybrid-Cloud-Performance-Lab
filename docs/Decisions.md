@@ -49,54 +49,54 @@ application gateway > web app > employee app > azure load balancer > database
 - Slightly more complex than a single VM, but better suited for scaling experiments and load testing.
 
 
-## Managed Database Choice
+## Storage Table Choice
 
-**Problem:** We needed to choose a managed database for the trading application that could provide global reach, low latency, and strong performance for time-sensitive workloads.
+**Problem:** We needed to choose a table-based storage option for the trading platform that would keep the solution simple and avoid paying for provisioned Cosmos DB capacity when the table is only used lightly.
 
 **Options Considered:**  
-- **Cosmos DB** — Globally distributed, high performance, and well suited for low-latency trading application access.
-- **Traditional managed relational database** — Familiar and reliable, but typically less optimized for globally distributed low-latency access.
+- **Cosmos DB Table API** — Feature-rich and globally distributed, but it introduces provisioned capacity and throughput-based billing.
+- **Azure Table Storage** — Simple key-value table storage with pay-per-use behavior that better matches a lightweight metadata or state scenario.
 
 **Acceptance Criteria:**  
-- The database must support low-latency access for trading workloads.
-- The database must be suitable for global, high-performance access patterns.
-- The solution must support access through a service endpoint.
+- The table storage must be low cost.
+- The solution should only incur charges for actual table usage.
+- The table storage must be simple to manage for this platform.
 
 **Decision:**  
-- Use **Cosmos DB** as the managed database because it provides global high performance for trading apps and low latency when accessed through a service endpoint.
+- Use **Azure Table Storage** instead of Cosmos DB so the platform is only charged for the storage table itself rather than paying for provisioned Cosmos DB throughput.
 
 **Impact:**  
-- Better fit for globally distributed, latency-sensitive trading scenarios.
-- Simplifies managed database operations while supporting scalable access patterns.
-- Service endpoint access helps keep traffic to the database controlled and private within the Azure network boundary.
+- Lowers cost for small or intermittent table workloads.
+- Avoids Cosmos DB throughput and provisioning overhead.
+- Keeps the storage design simple and easy to operate.
 
 
-## Private Database Connectivity
+## Private Storage Access
 
-**Problem:** We needed a secure way for the application subnet to reach Cosmos DB without exposing the database broadly to the public internet.
+**Problem:** We needed a secure way for the application subnet to reach the storage layer without exposing the data broadly to the public internet.
 
 **Options Considered:**  
 - **Public endpoint with firewall rules** — Easy to configure, but relies more heavily on public network exposure.
 - **Private endpoint** — Strong isolation, but adds more configuration overhead.
-- **Service endpoint** — Keeps traffic on the Azure backbone and provides private connectivity from the subnet to Cosmos DB with simpler setup.
+- **Service endpoint** — Keeps traffic on the Azure backbone and provides private connectivity from the subnet to the storage account with simpler setup.
 
 **Acceptance Criteria:**  
-- The database connection must remain private from the application subnet.
+- The storage access must remain private from the application subnet.
 - The solution must avoid unnecessary public internet exposure.
 - The configuration must stay simple enough for the platform environment.
 
 **Decision:**  
-- Use a **service endpoint** on the application subnet for Cosmos DB access so the trading application can connect privately over Azure infrastructure.
+- Use a **service endpoint** on the application subnet for storage access so the application can connect privately over Azure infrastructure.
 
 **Impact:**  
-- Improves network security by limiting database access to the intended subnet.
-- Keeps database traffic on Azure-managed networking instead of the public internet.
+- Improves network security by limiting storage access to the intended subnet.
+- Keeps storage traffic on Azure-managed networking instead of the public internet.
 - Provides a practical balance between security and operational simplicity for this project.
 
 
 ## Subnet Security Rules
 
-**Problem:** We needed subnet-level security rules that allow only the required traffic for administration, application access, and Cosmos DB connectivity while blocking everything else by default.
+**Problem:** We needed subnet-level security rules that allow only the required traffic for administration, application access, and storage connectivity while blocking everything else by default.
 
 **Options Considered:**  
 - **Open subnet with minimal filtering** — Simple, but too permissive for the platform.
@@ -106,11 +106,11 @@ application gateway > web app > employee app > azure load balancer > database
 **Acceptance Criteria:**  
 - Allow SSH for administration.
 - Allow HTTPS for application traffic.
-- Allow Cosmos DB access through the service endpoint.
+- Allow storage access through the service endpoint.
 - Block all other traffic.
 
 **Decision:**  
-- Configure the subnet NSG to allow **SSH (22)**, **HTTPS (443)**, and **Cosmos DB service endpoint traffic**, then rely on the NSG default deny rules to block all remaining traffic.
+- Configure the subnet NSG to allow **SSH (22)**, **HTTPS (443)**, and **storage service endpoint traffic**, then rely on the NSG default deny rules to block all remaining traffic.
 
 **Impact:**  
 - Keeps the subnet locked down to only the required ports and services.

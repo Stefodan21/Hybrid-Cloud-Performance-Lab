@@ -15,7 +15,7 @@ TODO: Insert the architecture diagram here.
 - Virtual network and application subnet
 - Linux VM Scale Set behind a public load balancer
 - Azure Blob Storage for Terraform state
-- Cosmos DB with service endpoint access from the application subnet
+- Azure Table Storage with service endpoint access from the application subnet
 - Monitoring and alerting via Azure-native services
 
 ## Design notes
