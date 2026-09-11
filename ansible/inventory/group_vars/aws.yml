@@ -1,0 +1,5 @@
+---
+# Cloud-specific defaults for AWS-hosted nodes.
+cloud_provider: aws
+vm_family: c6i
+monitoring_agent: cloudwatch

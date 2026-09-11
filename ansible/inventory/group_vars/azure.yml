@@ -1,0 +1,5 @@
+---
+# Cloud-specific defaults for Azure-hosted nodes.
+cloud_provider: azure
+vm_family: lsv2
+monitoring_agent: azure_monitor

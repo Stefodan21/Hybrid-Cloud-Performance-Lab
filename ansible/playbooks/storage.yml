@@ -1,0 +1,7 @@
+---
+- name: Storage configuration
+  hosts: all
+  become: true
+  gather_facts: true
+  roles:
+    - storage_config

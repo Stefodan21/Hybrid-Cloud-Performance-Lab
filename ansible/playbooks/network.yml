@@ -1,0 +1,7 @@
+---
+- name: Network tuning
+  hosts: all
+  become: true
+  gather_facts: true
+  roles:
+    - network_tuning
