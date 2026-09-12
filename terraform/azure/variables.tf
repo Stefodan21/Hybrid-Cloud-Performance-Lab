@@ -3,12 +3,12 @@ variable "region" {
   default = "eastus"
 }
 variable "admin_username" {
-  type = string
+  type    = string
   default = "adminuser"
 }
 
 variable "resource_group_name" {
-  type = string
+  type    = string
   default = "rgtradingeastus001"
 }
 
@@ -18,7 +18,7 @@ variable "tenant_id" {
 
 
 variable "container_name" {
-  type = string
+  type    = string
   default = "terraform"
 }
 
