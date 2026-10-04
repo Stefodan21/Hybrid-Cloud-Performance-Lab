@@ -55,7 +55,8 @@ This guide captures the first-time Azure setup steps for the platform, including
    terraform apply -var-file=terraform.tfvars
    ```
 
-7. Confirm the deployment in Azure and review the VMSS, load balancer, subnet NSG, and Cosmos DB resources.
+7. Confirm the deployment in Azure and review the three virtual machines, load balancer, subnet NSG, and Cosmos DB resources.
+8. Capture the Azure VM private IP outputs and use them to update the Ansible inventory files.
 
 ## Notes
 
@@ -63,3 +64,4 @@ This guide captures the first-time Azure setup steps for the platform, including
 - Keep the resource group name, storage account name, and container name consistent with the Terraform backend configuration.
 - If `terraform init` returns a 403 on the backend, confirm the current identity has a Blob data role on the storage account.
 - Keep the resource group name, storage account name, and container name consistent with the backend config file.
+- Use the Terraform outputs in `terraform/azure/outputs.tf` to feed the Azure host inventory after each apply.

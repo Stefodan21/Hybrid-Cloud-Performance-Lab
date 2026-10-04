@@ -7,9 +7,10 @@ This page captures the operational runbooks and standard procedures for the plat
 ## Standard procedures
 
 - Deploy infrastructure with Terraform
-- Scale the VMSS as required
+- Manage the three Azure virtual machines as a fixed application tier
 - Validate failover and recovery assumptions
 - Confirm backup and restore readiness
+- Refresh Ansible inventory entries from Terraform outputs after each deployment
 
 ## Operational notes
 

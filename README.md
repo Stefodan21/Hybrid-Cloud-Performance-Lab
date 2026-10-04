@@ -4,17 +4,18 @@ A reference implementation for a latency-sensitive trading workload. The reposit
 
 ## What’s in this repo
 
-- `terraform/azure/` — Azure infrastructure code for networking, VM scale sets, load balancing, storage, and Cosmos DB
+- `terraform/azure/` — Azure infrastructure code for networking, three Linux VMs behind a load balancer, storage, and Cosmos DB
 - `docs/` — handoff-ready documentation for getting started, architecture, operations, governance, and troubleshooting
 - `businessrequirements/` — business and platform requirements that shape the overall design
 
 ## Current Azure design
 
 - Virtual network and application subnet
-- Linux VM Scale Set behind a public load balancer
+- Three Linux virtual machines behind a public load balancer
 - Network security group applied at the subnet level
 - Cosmos DB with private access via service endpoint
 - Remote Terraform state stored in Azure Blob Storage
+- Terraform outputs for Azure VM names and private IPs
 
 ## How to run it
 

@@ -1,0 +1,23 @@
+---
+
+# roles/monitoring/tasks/main.yml
+
+- name: Gather Kernel level metrics
+  ansible.builtin.shell: |
+    echo "Scheduler delays:" && cat /proc/schedstat
+    echo "SoftIRQ load:" && cat /proc/softirqs
+    echo "Packet processing:" && cat /proc/net/softnet_stat
+    echo "CPU contention:" && mpstat
+    echo "Memory pressure (page faults):" && vmstat -s | grep "page"
+  register: kernel_metrics
+  changed_when: false
+
+- name: Gather virtual NIC metrics
+
+- name: Gather TCP-level metrics
+
+- name: Gather Storage metrics
+
+- name: Gather Network path metrics
+
+- name: Write results to file

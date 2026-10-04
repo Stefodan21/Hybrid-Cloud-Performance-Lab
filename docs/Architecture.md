@@ -13,7 +13,7 @@ TODO: Insert the architecture diagram here.
 ## Components
 
 - Virtual network and application subnet
-- Linux VM Scale Set behind a public load balancer
+- Three Linux virtual machines behind a public load balancer
 - Azure Blob Storage for Terraform state
 - Azure Table Storage with service endpoint access from the application subnet
 - Monitoring and alerting via Azure-native services
@@ -23,3 +23,4 @@ TODO: Insert the architecture diagram here.
 - Resiliency is built around managed Azure services and repeatable infrastructure provisioning.
 - Latency-sensitive traffic is constrained to the application subnet and approved service paths.
 - Observability should cover infrastructure, connectivity, and application health.
+- Terraform outputs expose the Azure VM names and private IP addresses for downstream inventory updates.

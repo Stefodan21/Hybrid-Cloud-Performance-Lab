@@ -26,27 +26,27 @@ application gateway > web app > employee app > azure load balancer > database
 - Supports clear separation between hot-path workloads and disaster recovery data.
 
 
-## VM Scale Set Configuration
+## Azure Compute Layout
 
-**Problem:** We needed to choose a compute layout for testing that balanced performance, cost, and operational simplicity while also supporting horizontal scaling.
+**Problem:** We needed to choose a compute layout for testing that balanced performance, cost, and operational simplicity while supporting a load-balanced application tier.
 
 **Options Considered:**  
-- **Single `Standard_A2_v2` VM** — Lower operational overhead, but no built-in autoscaling.
-- **Linux VM Scale Set** — Supports horizontal scaling and automated instance management, but adds some deployment complexity.
+- **Single `Standard_A2_v2` VM** — Lower operational overhead, but not enough separation for a multi-node application tier.
+- **Three standalone Linux VMs** — Keeps the deployment straightforward while still allowing a small, load-balanced application tier.
 
 **Acceptance Criteria:**  
 - The compute layer must be affordable for testing.
 - The workload must support Docker containers for scaling experiments.
 - The solution must allow SSH access for administration and validation.
-- The compute layer must support autoscaling for load-based experiments.
+- The compute layer must support a public load balancer and predictable host inventory.
 
 **Decision:**  
-- Use a Linux **Azure Virtual Machine Scale Set (VMSS)** with `Standard_A2_v2` instances. A Terraform-generated SSH key (`tls_private_key`) is used so the instances can be accessed securely over SSH and used to run Docker containers during testing.
+- Use **three standalone Azure Linux VMs** with `Standard_A2_v2` sizing and a Terraform-generated SSH key (`tls_private_key`) so the hosts can be accessed securely over SSH and used to run Docker containers during testing.
 
 **Impact:**  
-- Enables horizontal scaling through VMSS instead of a single VM.
-- Matches the Terraform implementation and autoscale configuration.
-- Slightly more complex than a single VM, but better suited for scaling experiments and load testing.
+- Keeps the deployment simple while preserving a realistic multi-node layout.
+- Matches the Terraform implementation and load balancer backend pool configuration.
+- Makes inventory generation and operational troubleshooting more direct than scale-set-based instance management.
 
 
 ## Storage Table Choice

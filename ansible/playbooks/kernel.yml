@@ -1,7 +1,8 @@
----
-- name: Kernel tuning
-  hosts: all
+- hosts: all
   become: true
-  gather_facts: true
-  roles:
-    - kernel_tuning
+  vars_files:
+    - ../roles/kernel_tuning/vars.yml   # load tuning parameters
+  tasks:
+    - include_tasks: ../roles/kernel_tuning/tasks.yml
+  handlers:
+    - include_tasks: ../roles/kernel_tuning/handlers.yml

@@ -57,7 +57,7 @@ Register the common providers up front before deploying, so you don't hit the sa
 az provider register --namespace Microsoft.Storage --wait
 # Needed for networking resources such as VNets, NSGs, and load balancers.
 az provider register --namespace Microsoft.Network --wait
-# Needed for VMs, VMSS, and related compute resources.
+# Needed for VMs and related compute resources.
 az provider register --namespace Microsoft.Compute --wait
 # Needed for backup and recovery services.
 az provider register --namespace Microsoft.RecoveryServices --wait
