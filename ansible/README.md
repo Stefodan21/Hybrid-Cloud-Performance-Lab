@@ -4,6 +4,12 @@ This folder contains the Ansible automation used to tune and configure the lab i
 
 ## Folder structure
 
+### `docs/`
+Design notes and decisions for the Ansible automation.
+
+- `README.md` — overview of the documentation in this folder.
+- `Decisions.md` — explains why the kernel, network, storage, monitoring, and stress-test roles exist.
+
 ### `playbooks/`
 Entry-point YAML files that define **what to run**. Each playbook calls roles and tasks.
 
@@ -22,6 +28,8 @@ Reusable collections of tasks, handlers, templates, and variables. Roles keep au
 - `kernel_tuning/` — sysctl configuration, GRUB parameters, hugepages setup.
 - `network_tuning/` — NIC tuning, `ethtool` commands, TCP stack parameters.
 - `storage_config/` — filesystem creation, mount options, and performance tuning.
+- `monitoring/` — observability and metrics collection support.
+- `Stress_test/` — generates CPU, network, and TCP load so monitoring can be validated under pressure.
 
 Think of roles as the ingredients that playbooks call.
 

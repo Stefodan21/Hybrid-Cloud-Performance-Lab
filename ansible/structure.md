@@ -23,6 +23,10 @@ ansible/
 │   ├── storage.yml              # Runs storage tuning and filesystem configuration tasks
 │   └── testing.yml              # Runs validation or smoke-test steps after configuration
 
+├── docs/                        # Design notes and decisions for the Ansible automation
+│   ├── README.md                # Overview of the Ansible documentation
+│   └── Decisions.md             # Explains role choices and stress-test decisions
+
 └── roles/                       # Reusable automation components that keep logic modular
     ├── kernel_tuning/           # Role for kernel performance changes
     │   ├── handlers/            # Handlers used when kernel changes need a restart or reload
@@ -41,12 +45,20 @@ ansible/
     │   ├── tasks/               # Main task logic for this role
     │   │   └── main.yml         # Entry point for storage configuration tasks
     │   └── vars/                # Role-specific variables for storage configuration
-    |
-    └── monitoring/              # Role for setting up observability tools, metrics collection, and alerting
-        ├── tasks/               # Contains the step-by-step automation for installing and configuring monitoring components
-        │   └── main.yml         # Main task file for deploying monitoring agents, exporters, and related setup steps
-        └── vars/                # Stores role-specific values that make the monitoring setup flexible and reusable
-            └── main.yml         # Variables for service names, ports, endpoints, thresholds, and other monitoring settings
+
+    ├── monitoring/              # Role for setting up observability tools, metrics collection, and alerting
+    │   ├── tasks/               # Contains the step-by-step automation for installing and configuring monitoring components
+    │   │   └── main.yml         # Main task file for deploying monitoring agents, exporters, and related setup steps
+    │   └── vars/                # Stores role-specific values that make the monitoring setup flexible and reusable
+    │       └── main.yml         # Variables for service names, ports, endpoints, thresholds, and other monitoring settings
+
+    └── Stress_test/             # Role for generating load so monitoring can be validated under pressure
+        ├── handlers/            # Handlers for any cleanup or follow-up actions after stress tasks
+        │   └── main.yml         # Optional cleanup or follow-up actions after stress tasks
+        ├── tasks/               # Main task logic for stress generation
+        │   └── main.yml         # Entry point for CPU, network, and TCP stress tasks
+        └── vars/                # Variables for stress duration, methods, and workload settings
+            └── main.yml         # Variables used by the stress-test role
 ```
 
 ## What each part does

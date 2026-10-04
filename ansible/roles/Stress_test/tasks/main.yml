@@ -1,0 +1,32 @@
+---
+
+- name: Stress CPU and scheduler for kernel metrics sampling
+  ansible.builtin.shell: |
+    set -o pipefail
+    stress-ng --cpu 0 --cpu-method matrixprod --timeout 60s
+  args:
+    executable: /bin/bash
+  changed_when: false
+  async: 65
+  poll: 0
+
+- name: Start iperf3 server for NIC stress
+  ansible.builtin.shell: |
+    set -o pipefail
+    iperf3 -s -D
+  args:
+    executable: /bin/bash
+  changed_when: false
+  when: inventory_hostname in groups['iperf_server']
+
+- name: Run iperf3 client for NIC stress
+  ansible.builtin.shell: |
+    set -o pipefail
+    iperf3 -c {{ hostvars[groups['iperf_server'][0]]['ansible_host'] }} -t 60
+  args:
+    executable: /bin/bash
+  changed_when: false
+  async: 65
+  poll: 0
+  when: inventory_hostname in groups['iperf_clients']
+
