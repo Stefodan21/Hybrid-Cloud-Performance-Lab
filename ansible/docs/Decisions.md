@@ -54,6 +54,22 @@ The stress-test role uses three workload patterns:
 
 Because the `iperf3` NIC test already generates genuine TCP traffic between the two VMs, we dropped the originally planned separate TCP `stress-ng` task. That avoids duplicate load and keeps the benchmark more realistic for this workload.
 
+## Stress task logging and retrieval decisions
+
+The stress tasks write their own output directly to a log file on the VM using shell redirection inside the command itself. That was chosen because an async task with `async: 65` and `poll: 0` only tells Ansible that the job started; it does not reliably capture the final output once the full run finishes. Writing straight to disk avoids that timing gap and leaves a stable record on the host.
+
+Each stress task registers its async job id, and a separate `async_status` task polls that job every 5 seconds, up to 15 times, until the run is actually finished. That confirms the full stress window completed and the log file is complete, rather than only proving the background job was launched.
+
+Only the polling task fires a `notify`, which triggers a handler that runs Ansible's `fetch` module. That handler pulls the completed log file from the VM down to the local machine, and it includes `inventory_hostname` in the destination filename so logs from multiple VMs do not overwrite each other.
+
+This is the standard pattern for the CPU, NIC, and storage stress tasks:
+
+1. redirect output to a log file
+2. register the async job id
+3. poll with `async_status` until truly finished
+4. notify a handler
+5. fetch the log file locally
+
 ## Why `matrixprod` was chosen
 `matrixprod` was selected because it creates heavy floating-point matrix work and cache pressure, which is a good fit for a low-latency trading environment where CPU efficiency and scheduling behavior matter.
 

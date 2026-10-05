@@ -3,12 +3,12 @@
 - name: Stress CPU and scheduler for kernel metrics sampling
   ansible.builtin.shell: |
     set -o pipefail
-    stress-ng --cpu 0 --cpu-method matrixprod --timeout 60s
+    stress-ng --cpu 0 --cpu-method matrixprod --timeout 60s > /var/log/stress-tests/cpu-stress.log 2>&1
   args:
     executable: /bin/bash
-  changed_when: false
   async: 65
   poll: 0
+  register: cpu_stress_job
 
 - name: Start iperf3 server for NIC stress
   ansible.builtin.shell: |
@@ -22,21 +22,29 @@
 - name: Run iperf3 client for NIC stress
   ansible.builtin.shell: |
     set -o pipefail
-    iperf3 -c {{ hostvars[groups['iperf_server'][0]]['ansible_host'] }} -t 60
+    iperf3 -c {{ hostvars[groups['iperf_server'][0]]['ansible_host'] }} -t 60 > /var/log/stress-tests/nic-stress.log 2>&1
   args:
     executable: /bin/bash
-  changed_when: false
   async: 65
   poll: 0
+  register: nic_stress_job
   when: inventory_hostname in groups['iperf_clients']
 
 - name: Stress disk I/O for storage metrics sampling
   ansible.builtin.shell: |
     set -o pipefail
-    stress-ng --hdd 2 --hdd-bytes 1G --timeout 60s
+    stress-ng --hdd 2 --hdd-bytes 1G --timeout 60s > /var/log/stress-tests/storage-stress.log 2>&1
+  args:
+    executable: /bin/bash
+  async: 65
+  poll: 0
+  register: storage_stress_job
+
+- name: Collect network path latency and loss metrics
+  ansible.builtin.shell: |
+    set -o pipefail
+    mtr --report --report-cycles 10 8.8.8.8
   args:
     executable: /bin/bash
   changed_when: false
-  async: 65
-  poll: 0
-
+  register: network_path_stats
