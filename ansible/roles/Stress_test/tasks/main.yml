@@ -30,3 +30,13 @@
   poll: 0
   when: inventory_hostname in groups['iperf_clients']
 
+- name: Stress disk I/O for storage metrics sampling
+  ansible.builtin.shell: |
+    set -o pipefail
+    stress-ng --hdd 2 --hdd-bytes 1G --timeout 60s
+  args:
+    executable: /bin/bash
+  changed_when: false
+  async: 65
+  poll: 0
+
