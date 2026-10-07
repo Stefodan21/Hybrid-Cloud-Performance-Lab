@@ -36,6 +36,7 @@
     stress-ng --hdd 2 --hdd-bytes 1G --timeout 60s > /var/log/stress-tests/storage-stress.log 2>&1
   args:
     executable: /bin/bash
+  
   async: 65
   poll: 0
   register: storage_stress_job
